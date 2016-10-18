@@ -1,0 +1,81 @@
+---
+title: "Accessing Student Work on Github with the gitfiles package"
+author: "Daniel Kaplan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include = FALSE}
+library(gitfiles)
+```
+
+## Preliminaries
+
+1. Set up password caching for git.
+    - Instructions for [OS-X](https://help.github.com/articles/caching-your-github-password-in-git/) or [Linux](https://help.github.com/articles/caching-your-github-password-in-git/#platform-linux) or [Windows](https://help.github.com/articles/caching-your-github-password-in-git/#platform-windows)
+2. Create a blank directory to hold the repositories, grade file, etc. For this example, it will be called `"stats101-grades"
+3.   ```r
+     setup_grading_files(dir = "stats101-grades")
+     ```
+4. In that directory, edit the `STUDENTS.csv` and `ASSIGNMENTS.csv` files using a suitable editor, e.g. a spreadsheet program. You can go back and revise or add on to these files at any time.
+    - The assignments are listed as the name of the corresponding file, without the filetype extension.
+    - The assignment date in `ASSIGNMENTS.csv` should be in YYYY-MM-DD format.
+    
+    `ASSIGNMENTS.csv`
+    ```{r echo = FALSE}
+    ASSIGNMENTS <- gitfiles::read_assignment_file(example = TRUE)
+    knitr::kable(head(ASSIGNMENTS))
+    ```
+    
+    `Students.csv`
+    
+    ```{r echo = FALSE}
+    STUDENTS <- gitfiles:::read_student_file(example = TRUE)
+    knitr::kable(head(STUDENTS))
+    ```
+
+TODO: 
+
+* Also a function `update_course()` that will clone the repositories. So you would set up the course like this:
+    - `set_up_course("Math 253")`
+    - Edit the files to list the assignments and the students and their repos.
+    - `update_course()`
+    - Whenever a change is needed in the files, `update_course()` again.
+* Have a `pull = TRUE` argument for `get_log()` 
+
+## Cloning and updating
+
+You only need to clone at the beginning of the course or when a new repository is added.
+
+Use `clone_repos()`. This will bring in all the repositories listed in `stat101/STUDENTS.csv`. If a repo has already been cloned, it will be skipped.
+
+You update the repositories by doing a "git pull" on each. You need to do this **whenever you want to update** the files.
+
+`update_repos()`
+
+## Processing the files
+
+The first step is to create a log file based on all the repositories. 
+
+The log file doesn't list the files in the repos, it lists the files that have been pushed to the repos. The point of this is to ignore the file stubs that were created to hold the assignments.
+
+In the root directory for the repositories^[That is, the directory relative to which the repo names in `Students_253_Fall_2016.csv` are given.] run
+```{r eval = FALSE}
+CommitLog <- get_log()
+```
+
+There is an optional argument to set the date *after which* you want the pushes. You can set this to avoid any initial pushes when the stubs were created.
+
+Based on this log, you can search for 
+
+* assignments that have been handed in
+* assignments not yet handed in
+    - `missing_assignments(Log253)`
+* files that are not in the list given in `Assignments_253.csv`
+    - `oddball_files(Log253)`
+    - Any files whose name contains "note" will not be included as oddballs
+    
