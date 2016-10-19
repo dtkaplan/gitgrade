@@ -34,8 +34,7 @@ shinyServer(function(input, output, session) {
     input$which_student
     input$which_assignment
 
-    res <- input$which_file
-    as.numeric(gsub("::.*$", "", res))
+    as.numeric(input$which_file)
   })
 
   files_to_display <- reactive({
@@ -57,12 +56,11 @@ shinyServer(function(input, output, session) {
       group_by(extension, assignment) %>%
       filter(date == max(date)) %>%
       select(id, file_name, extension, commit, date, comment, assignment) %>%
+      ungroup() %>% group_by(extension, assignment) %>%
       filter(row_number() == 1) %>% # Make sure there's just one of each file
       ungroup()
-    updateRadioButtons(session, "display_type",
-                       choices = intersect(
-                         c("rmd", "html", "r"),
-                         Tmp$extension))
+
+
 
     Tmp <-
       Tmp %>%
@@ -149,22 +147,36 @@ shinyServer(function(input, output, session) {
     write_grades(GRADES)
   })
 
-  update_file_display <- observe({
+  observe({
+    if (input$next_paper == 0) return()
+
+    current_index <- as.numeric(isolate(input$which_file))
+    if(current_index < nrow(THESE_FILES))
+      updateSelectizeInput(session, "which_file", selected = current_index + 1)
+
+  })
+
+   # update filedisplay
+  observe({
     # for the dependency
     input$which_student
     input$which_assignment
     input$which_file
-    grade <- grade_for_this_file()
+
 
     # Display the various varieties of the assignment selected selected
     nms <- current_student_assignment_files()
 
     if (nrow(nms) == 0) return()
 
+    updateRadioButtons(session, "display_type",
+                       choices = intersect(c("rmd", "html", "r"), nms$extension))
+
     # change this to loop over the entries in nms, using the extension
     # to direct the output to a given display.
 
     nms <- nms[nms$extension == input$display_type, ]
+    nms <- nms[1,] # handle glitch in GRADES when there is more than one entry at the same time.
     contents <- ""
     this_file <- nms$file_name
     # add the directory
@@ -182,6 +194,7 @@ shinyServer(function(input, output, session) {
         HTML(paste("<pre>", paste(contents, collapse = "\n"), "</pre>"))
       }
     output$file_display <- renderText(contents)
+    grade <- grade_for_this_file()
     output$previous_score <- renderText(grade)
   })
 })

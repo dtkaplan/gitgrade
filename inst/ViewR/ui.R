@@ -3,16 +3,13 @@ library(gitfiles)
 
 shinyUI(fluidPage(
 
-  # Application title
   titlePanel("Grading papers from git"),
 
-  # Sidebar with a slider input for number of bins
-#  verticalLayout(fluid = TRUE,
-
   fluidRow(
-      column(6, selectizeInput("which_file", "File displayed:", width = "100%",
+      column(5, selectizeInput("which_file", "File displayed:", width = "100%",
                      choices = format_file_names(COMMIT_LOG))),
-      column(3, selectizeInput("which_assignment", "Select assignments:", multiple=TRUE,
+      column(1, actionButton("next_paper", "Next")),
+      column(3, selectizeInput("which_assignment", "Select assignment:", multiple=TRUE,
                   choices = ASSIGNMENTS$assignment)),
       column(3, selectizeInput("which_student", multiple = TRUE,
                   "or select student:",
@@ -29,6 +26,7 @@ shinyUI(fluidPage(
       actionButton("score_3", "3"),
       actionButton("score_4", "4"),
       actionButton("score_5", "5")),
+
       # Comment text entry area
       column(6, tags$textarea(id = 'comment',
                     placeholder = 'Comments for student:', cols = 100, rows = 2, ""))
