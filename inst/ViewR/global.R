@@ -1,7 +1,8 @@
 library(dplyr)
 library(gitfiles)
 
-repo_directory <- "/Users/kaplan/KaplanFiles/Courses/math253-students/Repositories/"
+# repo_directory <- "/Users/kaplan/KaplanFiles/Courses/math253-students/Repositories/"
+ repo_directory <- "/Users/kaplan/KaplanFiles/Courses/comp110-students/Repositories/"
 
 # Bring in the log file
 COMMIT_LOG <- readRDS(paste0(repo_directory, "LOGFILE.rds"))
@@ -40,8 +41,6 @@ get_available_files <- function(Log, .id = NULL, .assignment = NULL) {
 
   tmp %>% filter(date == max(date))
 }
-
-# Also add in here, eventually, whether the file has been graded.
 
 format_file_names <- function(Log, id = NULL, assignment = NULL) {
   THESE_FILES <<-

@@ -10,7 +10,7 @@ shinyUI(fluidPage(
 #  verticalLayout(fluid = TRUE,
 
   fluidRow(
-      column(4, selectizeInput("which_file", "File displayed:",
+      column(6, selectizeInput("which_file", "File displayed:", width = "100%",
                      choices = format_file_names(COMMIT_LOG))),
       column(3, selectizeInput("which_assignment", "Select assignments:", multiple=TRUE,
                   choices = ASSIGNMENTS$assignment)),
