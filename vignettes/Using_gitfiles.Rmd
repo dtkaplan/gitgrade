@@ -1,5 +1,5 @@
 ---
-title: "Accessing Student Work on Github with the gitfiles package"
+title: "Accessing Student Work on Github with the gitgrade package"
 author: "Daniel Kaplan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -10,7 +10,7 @@ vignette: >
 ---
 
 ```{r include = FALSE}
-library(gitfiles)
+library(gitgrade)
 ```
 
 ## Preliminaries
@@ -27,14 +27,14 @@ library(gitfiles)
     
     `ASSIGNMENTS.csv`
     ```{r echo = FALSE}
-    ASSIGNMENTS <- gitfiles::read_assignment_file(example = TRUE)
+    ASSIGNMENTS <- gitgrade::read_assignment_file(example = TRUE)
     knitr::kable(head(ASSIGNMENTS))
     ```
     
     `Students.csv`
     
     ```{r echo = FALSE}
-    STUDENTS <- gitfiles:::read_student_file(example = TRUE)
+    STUDENTS <- gitgrade:::read_student_file(example = TRUE)
     knitr::kable(head(STUDENTS))
     ```
 

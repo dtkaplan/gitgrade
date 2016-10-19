@@ -1,6 +1,6 @@
 # An application for viewing and scoring RMD/HTML/R files
 library(shiny)
-library(gitfiles)
+library(gitgrade)
 
 shinyServer(function(input, output, session) {
 

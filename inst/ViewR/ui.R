@@ -1,5 +1,5 @@
 library(shiny)
-library(gitfiles)
+library(gitgrade)
 
 shinyUI(fluidPage(
 

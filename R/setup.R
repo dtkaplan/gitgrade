@@ -32,7 +32,7 @@ setup_grading_files <- function(dir = ".") {
     #                    repo = "repo name",
     #                    github_id = "repo owner",
     #                    stringsAsFactors = FALSE)
-    stub <- read.csv("inst/STUDENTS-example.csv", package = "gitfiles")
+    stub <- read.csv("inst/STUDENTS-example.csv", package = "gitgrade")
     stub <- stub[,-1] # start with a blank
     write.csv(stub, file = grade_file_name, row.names = FALSE )
   }
@@ -43,7 +43,7 @@ setup_grading_files <- function(dir = ".") {
     stub <- data.frame(assignment = "Homework-01", due_date=Sys.Date(),
                        stringsAsFactors = FALSE)
     # stub <- read.csv(
-    #   system.file("inst/ASSIGNMENTS-example.csv", package = "gitfiles"),
+    #   system.file("inst/ASSIGNMENTS-example.csv", package = "gitgrade"),
     #   stringsAsFactors = FALSE)
     stub$due_date <- as.POSIXct(strptime(stub$due_date, "%Y-%m-%d"))
     stub <- stub[,-1] # start with a blank
@@ -55,7 +55,7 @@ setup_grading_files <- function(dir = ".") {
 read_student_file <- function(dir = ".", example = FALSE) {
 
   if (example) {
-  contents <- read.csv(system.file("STUDENTS-example.csv", package = "gitfiles"),
+  contents <- read.csv(system.file("STUDENTS-example.csv", package = "gitgrade"),
                          stringsAsFactors = FALSE)
   } else {
     current_dir <- getwd()
@@ -75,7 +75,7 @@ read_student_file <- function(dir = ".", example = FALSE) {
 read_assignment_file <- function(dir = ".", example = FALSE) {
 
   if (example) {
-    contents <- read.csv(system.file("ASSIGNMENTS-example.csv", package = "gitfiles"),
+    contents <- read.csv(system.file("ASSIGNMENTS-example.csv", package = "gitgrade"),
                          stringsAsFactors = FALSE)
   } else {
     current_dir <- getwd()

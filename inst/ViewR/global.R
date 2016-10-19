@@ -1,14 +1,14 @@
 library(dplyr)
-library(gitfiles)
+library(gitgrade)
 
 repo_directory <- "/Users/kaplan/KaplanFiles/Courses/math253-students/Repositories/"
 #repo_directory <- "/Users/kaplan/KaplanFiles/Courses/comp110-students/Repositories/"
 data_directory <- paste0(repo_directory, "../")
 
 # Bring in the log and other summary files
-STUDENTS <- gitfiles:::read_student_file(dir = data_directory)
-ASSIGNMENTS <- gitfiles:::read_assignment_file(data_directory)
-GRADES <- gitfiles:::read_grade_file(dir = data_directory)
+STUDENTS <- gitgrade:::read_student_file(dir = data_directory)
+ASSIGNMENTS <- gitgrade:::read_assignment_file(data_directory)
+GRADES <- gitgrade:::read_grade_file(dir = data_directory)
 # Only files with the canonical assignment names
 COMMIT_LOG <- readRDS(paste0(data_directory, "LOGFILE.rds")) %>%
   filter(assignment %in% unique(ASSIGNMENTS$assignment))
