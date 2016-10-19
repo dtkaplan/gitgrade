@@ -149,7 +149,6 @@ shinyServer(function(input, output, session) {
     write_grades(GRADES)
   })
 
-
   update_file_display <- observe({
     # for the dependency
     input$which_student
