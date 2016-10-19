@@ -1,4 +1,4 @@
-Package: gitfiles
+Package: gitgrade
 Type: Package
 Title: Tools for grading student files in git
 Version: 0.1
