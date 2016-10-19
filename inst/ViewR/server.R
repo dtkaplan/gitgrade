@@ -13,16 +13,10 @@ shinyServer(function(input, output, session) {
   })
 
   display_assignment <- reactive({
-    cat("display_assignment ", input$which_file, "\n")
-    res <- gsub("^.*::", "", THESE_FILES[get_file_selected(), ]$assignment)
-
-    res
+    THESE_FILES[get_file_selected(), ]$assignment
   })
   display_id <- reactive({
-    cat("display_id ", input$which_file, "\n")
-    res <- gsub("::.*$", "", THESE_FILES[get_file_selected(), ]$id)
-
-    res
+    THESE_FILES[get_file_selected(), ]$id
   })
   grade_for_this_file <- reactive({
     tmp <-
@@ -63,7 +57,8 @@ shinyServer(function(input, output, session) {
       group_by(extension, assignment) %>%
       filter(date == max(date)) %>%
       select(id, file_name, extension, commit, date, comment, assignment) %>%
-      filter(row_number() == 1) # Make sure there's just one of each file
+      filter(row_number() == 1) %>% # Make sure there's just one of each file
+      ungroup()
     updateRadioButtons(session, "display_type",
                        choices = intersect(
                          c("rmd", "html", "r"),
@@ -71,11 +66,10 @@ shinyServer(function(input, output, session) {
 
     Tmp <-
       Tmp %>%
+      rename(commit_comment = comment) %>%
       left_join(GRADES %>%
-                  group_by(id, assignment) %>%
-                  filter(date == max(date),
-                         id == display_id(),
-                         assignment == display_assignment()) %>%
+                  filter(id == display_id(), assignment == display_assignment() ) %>%
+                  filter(date == max(date)) %>%
                   rename(grade_date = date, grade_commit = commit)
       )
 
@@ -90,7 +84,7 @@ shinyServer(function(input, output, session) {
                          id = file_being_graded$id,
                          grade = "bogus",
                          commit = file_being_graded$commit,
-                         comment = "Comments not yet implemented"
+                         comment = isolate(input$comment)
     )
     record
   })
@@ -181,6 +175,7 @@ shinyServer(function(input, output, session) {
     close(con)
     file_type <- input$display_type
     # display the contents
+    updateTextAreaInput(session, "comment", value = nms$comment)
     contents <-
       if (file_type == "html") {
         HTML(paste(contents, collapse = "\n"))

@@ -49,9 +49,30 @@ format_file_names <- function(Log, id = NULL, assignment = NULL) {
     group_by(id, assignment) %>%
     filter(date == max(date)) %>%
     arrange(id, assignment) %>%
-    filter(row_number() == 1)
+    filter(row_number() == 1) %>%
+    ungroup()
+  assignmentGrades <-
+    GRADES %>%
+    group_by(id, assignment) %>%
+    filter(date == max(date)) %>%
+    filter(row_number() == 1) %>%
+    ungroup() %>%
+    rename(grade_date = date, grade_commit = commit)
+
+  THESE_FILES <-
+    THESE_FILES %>%
+    rename(commit_comment = comment) %>%
+    left_join(assignmentGrades) %>%
+    mutate(regrade = ifelse(grade_date < date, "*", " ")) %>%
+    mutate(has_comment = ifelse(nchar(comment) > 1, "+", ""))
+
   display_names <-   THESE_FILES %>%
-    with( ., paste0(id, "::", assignment))
+    with( .,
+          paste0(assignment, " :: ", id, "  ",
+                 ifelse(is.na(grade), " ", grade), ifelse(is.na(regrade), " ", regrade),
+                 ifelse(is.na(has_comment), "", has_comment))
+
+          )
   res <- as.list(1:length(display_names))
   names(res) <- display_names
 
