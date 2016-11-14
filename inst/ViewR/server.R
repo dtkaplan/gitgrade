@@ -18,6 +18,8 @@ shinyServer(function(input, output, session) {
       progress <- shiny::Progress$new()
       on.exit(progress$close())
       progress$set("Pulling repos", value = 0)
+      update_repos()
+      get_log()
     }
   })
 

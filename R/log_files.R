@@ -37,6 +37,7 @@ get_log <- function(user = NULL, after = "2016-09-01", save = TRUE) {
     mutate(assignment = tools::file_path_sans_ext(assignment)) %>%
     mutate(id = gsub("^.*<", "", author)) %>%
     mutate(id = gsub("@.*$", "", id))
+  setwd(current_dir)
   if (save) saveRDS(Commit_log, file = "LOGFILE.rds")
   return(Commit_log)
 }
