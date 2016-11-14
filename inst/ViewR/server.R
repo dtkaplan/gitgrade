@@ -12,6 +12,15 @@ shinyServer(function(input, output, session) {
     updateSelectizeInput(session, "which_file", choices = new_names)
   })
 
+  # Handle updating the repos
+  observe({
+    if (input$pull > 0) {
+      progress <- shiny::Progress$new()
+      on.exit(progress$close())
+      progress$set("Pulling repos", value = 0)
+    }
+  })
+
   display_assignment <- reactive({
     THESE_FILES[get_file_selected(), ]$assignment
   })
@@ -59,7 +68,15 @@ shinyServer(function(input, output, session) {
       ungroup() %>% group_by(extension, assignment) %>%
       filter(row_number() == 1) %>% # Make sure there's just one of each file
       ungroup()
+    are_present <- file.exists(paste0(repo_directory, Tmp$file_name))
+    Tmp <- Tmp[are_present, ]
 
+    # The following update is here so that it happens only once for each set of files
+    # for one student+assignment
+    available_files <- intersect(c("rmd", "html", "r"), Tmp$extension)
+    updateRadioButtons(session, "display_type",
+                       choices = available_files,
+                       selected = available_files[1])
 
 
     Tmp <-
@@ -167,16 +184,19 @@ shinyServer(function(input, output, session) {
     # Display the various varieties of the assignment selected selected
     nms <- current_student_assignment_files()
 
-    if (nrow(nms) == 0) return()
+    if (all(is.na(nms$file_name))) return()
 
-    updateRadioButtons(session, "display_type",
-                       choices = intersect(c("rmd", "html", "r"), nms$extension))
 
     # change this to loop over the entries in nms, using the extension
     # to direct the output to a given display.
+    keepers <- nms$extension == input$display_type
+    if (all( ! keepers))
+      keepers <- 1
 
-    nms <- nms[nms$extension == input$display_type, ]
+
+    nms <- nms[keepers, ]
     nms <- nms[1,] # handle glitch in GRADES when there is more than one entry at the same time.
+
     contents <- ""
     this_file <- nms$file_name
     # add the directory

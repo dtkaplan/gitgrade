@@ -2,7 +2,7 @@ library(dplyr)
 library(gitgrade)
 
 repo_directory <- "/Users/kaplan/KaplanFiles/Courses/math253-students/Repositories/"
-#repo_directory <- "/Users/kaplan/KaplanFiles/Courses/comp110-students/Repositories/"
+# repo_directory <- "/Users/kaplan/KaplanFiles/Courses/comp110-students/Repositories/"
 data_directory <- paste0(repo_directory, "../")
 
 # Bring in the log and other summary files
@@ -18,7 +18,7 @@ THESE_FILES <- NULL
 write_grades <- function(grade_df) {
   if (all(c("date", "id", "assignment","grade", "commit") %in% names(grade_df))) {
     saveRDS(grade_df,
-            paste0(repo_directory, "GRADES.rds"))
+            paste0(data_directory, "GRADES.rds"))
   } else {
     warning("Broken format in GRADES data frame.")
   }

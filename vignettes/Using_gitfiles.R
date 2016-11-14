@@ -1,12 +1,12 @@
 ## ----include = FALSE-----------------------------------------------------
-library(gitfiles)
+library(gitgrade)
 
 ## ----echo = FALSE--------------------------------------------------------
-ASSIGNMENTS <- gitfiles::read_assignment_file(example = TRUE)
+ASSIGNMENTS <- gitgrade::read_assignment_file(example = TRUE)
 knitr::kable(head(ASSIGNMENTS))
 
 ## ----echo = FALSE--------------------------------------------------------
-STUDENTS <- gitfiles:::read_student_file(example = TRUE)
+STUDENTS <- gitgrade:::read_student_file(example = TRUE)
 knitr::kable(head(STUDENTS))
 
 ## ----eval = FALSE--------------------------------------------------------

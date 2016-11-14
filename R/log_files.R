@@ -1,9 +1,12 @@
 #' @export
 get_log <- function(user = NULL, after = "2016-09-01", save = TRUE) {
+  if ( ! file.exists("STUDENTS.csv")) stop("Not in a grading directory.")
   STUDENTS <- read_student_file()
   current_dir <- getwd()
   on.exit(setwd(current_dir))
   Res <- NULL
+  setwd("Repositories")
+  repo_dir <- getwd()
   for (k in 1:nrow(STUDENTS)) {
     this_repo <- STUDENTS$repo[k]
     message("Getting log of ", this_repo)
@@ -22,7 +25,7 @@ get_log <- function(user = NULL, after = "2016-09-01", save = TRUE) {
       commit <- c(commit, rep(this_commit, length(temp)))
     }
     Files <- data.frame(commit, file_name, stringsAsFactors = FALSE )
-    setwd(current_dir)
+    setwd(repo_dir)
     this_log <- merge(this_log, Files)
     Res <- rbind(Res, this_log)
   }

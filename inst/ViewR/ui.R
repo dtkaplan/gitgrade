@@ -3,12 +3,17 @@ library(gitgrade)
 
 shinyUI(fluidPage(
 
-  titlePanel("Grading papers from git"),
+  fluidRow(
+    column(3,
+           HTML("<b>Grading papers from git</b>")),
+    column(2,
+           actionButton("pull", "git pull"))
+  ),
 
   fluidRow(
       column(5, selectizeInput("which_file", "File displayed:", width = "100%",
                      choices = format_file_names(COMMIT_LOG))),
-      column(1, actionButton("next_paper", "Next")),
+
       column(3, selectizeInput("which_assignment", "Select assignment:", multiple=TRUE,
                   choices = ASSIGNMENTS$assignment)),
       column(3, selectizeInput("which_student", multiple = TRUE,
@@ -26,10 +31,10 @@ shinyUI(fluidPage(
       actionButton("score_3", "3"),
       actionButton("score_4", "4"),
       actionButton("score_5", "5")),
-
+      column(1, actionButton("next_paper", "Next")),
       # Comment text entry area
-      column(6, tags$textarea(id = 'comment',
-                    placeholder = 'Comments for student:', cols = 100, rows = 2, ""))
+      column(4, tags$textarea(id = 'comment',
+                    placeholder = 'Comments for student:', cols = 60, rows = 2, ""))
   ),
 
       wellPanel(id = "scroll_display",

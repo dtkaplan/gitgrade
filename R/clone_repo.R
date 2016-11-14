@@ -1,5 +1,13 @@
 #' @export
 clone_repos <- function(user = NULL) {
+  here <- getwd()
+  on.exit(setwd(here))
+  if (!file.exists("STUDENTS.csv"))
+    stop("No STUDENTS.csv file. Is the grading directory set up?")
+
+  STUDENTS <- read.csv("STUDENTS.csv", stringsAsFactors = FALSE)
+  if ( ! file.exists("Repositories")) stop("No 'Repositories' directory.")
+  setwd("Repositories")
   for (k in 1:nrow(STUDENTS)) {
     system(
       paste0("git clone ",
@@ -11,6 +19,14 @@ clone_repos <- function(user = NULL) {
 
 #' @export
 update_repos <- function(user = NULL) {
+  here <- getwd()
+  on.exit(setwd(here)) # return to the main directory
+  if ( ! file.exists("STUDENTS.csv"))
+    stop("No STUDENTS.csv file. Is the grading directory set up?")
+
+  STUDENTS <- read.csv("STUDENTS.csv", stringsAsFactors = FALSE)
+  if ( ! file.exists("Repositories")) stop("No 'Repositories' directory.")
+  setwd("Repositories")
   current_dir <- getwd()
   for (k in 1:nrow(STUDENTS)) {
     this_repo <- STUDENTS$repo[k]
